@@ -3922,31 +3922,6 @@ return o?o["rms"]:0},SampleRate(){return this._sampleRate},CurrentTime(){if(self
 }
 
 {
-'use strict';{const C3=self.C3;C3.Plugins.Browser=class BrowserPlugin extends C3.SDKPluginBase{constructor(opts){super(opts)}Release(){super.Release()}}}{const C3=self.C3;C3.Plugins.Browser.Type=class BrowserType extends C3.SDKTypeBase{constructor(objectClass){super(objectClass)}Release(){super.Release()}OnCreate(){}}}
-{const C3=self.C3;const DOM_COMPONENT_ID="browser";C3.Plugins.Browser.Instance=class BrowserInstance extends C3.SDKInstanceBase{constructor(inst,properties){super(inst,DOM_COMPONENT_ID);this._initLocationStr="";this._isOnline=false;this._referrer="";this._docTitle="";this._isCookieEnabled=false;this._screenWidth=0;this._screenHeight=0;this._windowOuterWidth=0;this._windowOuterHeight=0;this._isConstructArcade=false;this._cssStyleMap=new Map;this.AddDOMMessageHandlers([["online-state",e=>this._OnOnlineStateChanged(e)],
-["backbutton",()=>this._OnBackButton()],["sw-message",e=>this._OnSWMessage(e)],["hashchange",e=>this._OnHashChange(e)]]);const rt=this.GetRuntime().Dispatcher();this._disposables=new C3.CompositeDisposable(C3.Disposable.From(rt,"afterfirstlayoutstart",()=>this._OnAfterFirstLayoutStart()),C3.Disposable.From(rt,"window-resize",()=>this._OnWindowResize()),C3.Disposable.From(rt,"suspend",()=>this._OnSuspend()),C3.Disposable.From(rt,"resume",()=>this._OnResume()));this._runtime.AddLoadPromise(this.PostToDOMAsync("get-initial-state",
-{"exportType":this._runtime.GetExportType()}).then(data=>{this._initLocationStr=data["location"];this._isOnline=data["isOnline"];this._referrer=data["referrer"];this._docTitle=data["title"];this._isCookieEnabled=data["isCookieEnabled"];this._screenWidth=data["screenWidth"];this._screenHeight=data["screenHeight"];this._windowOuterWidth=data["windowOuterWidth"];this._windowOuterHeight=data["windowOuterHeight"];this._isConstructArcade=data["isConstructArcade"]}))}Release(){super.Release()}_OnAfterFirstLayoutStart(){this.PostToDOM("ready-for-sw-messages")}async _OnOnlineStateChanged(e){const isOnline=
-!!e["isOnline"];if(this._isOnline===isOnline)return;this._isOnline=isOnline;if(this._isOnline)await this.TriggerAsync(C3.Plugins.Browser.Cnds.OnOnline);else await this.TriggerAsync(C3.Plugins.Browser.Cnds.OnOffline)}async _OnWindowResize(){await this.TriggerAsync(C3.Plugins.Browser.Cnds.OnResize)}_OnSuspend(){this.Trigger(C3.Plugins.Browser.Cnds.OnPageHidden)}_OnResume(){this.Trigger(C3.Plugins.Browser.Cnds.OnPageVisible)}async _OnBackButton(){await this.TriggerAsync(C3.Plugins.Browser.Cnds.OnBackButton)}_OnSWMessage(e){const messageType=
-e["type"];if(messageType==="downloading-update")this.Trigger(C3.Plugins.Browser.Cnds.OnUpdateFound);else if(messageType==="update-ready"||messageType==="update-pending")this.Trigger(C3.Plugins.Browser.Cnds.OnUpdateReady);else if(messageType==="offline-ready")this.Trigger(C3.Plugins.Browser.Cnds.OnOfflineReady)}_OnHashChange(e){this._initLocationStr=e["location"];this.Trigger(C3.Plugins.Browser.Cnds.OnHashChange)}GetDebuggerProperties(){const prefix="plugins.browser.debugger";return[{title:"plugins.browser.name",
-properties:[{name:prefix+".user-agent",value:navigator.userAgent},{name:prefix+".is-online",value:this._isOnline},{name:prefix+".is-fullscreen",value:this._runtime.GetCanvasManager().IsDocumentFullscreen()}]}]}}}
-{const C3=self.C3;C3.Plugins.Browser.Cnds={IsOnline(){return this._isOnline},OnOnline(){return true},OnOffline(){return true},OnResize(){return true},CookiesEnabled(){return this._isCookieEnabled},IsFullscreen(){return this._runtime.GetCanvasManager().IsDocumentFullscreen()},OnBackButton(){return true},IsPortraitLandscape(p){const lastInnerWidth=this._runtime.GetCanvasManager().GetLastWidth();const lastInnerHeight=this._runtime.GetCanvasManager().GetLastHeight();const current=lastInnerWidth<=lastInnerHeight?
-0:1;return current===p},OnUpdateFound(){return true},OnUpdateReady(){return true},OnOfflineReady(){return true},OnHashChange(){return true},PageVisible(){return!this._runtime.IsSuspended()},OnPageHidden(){return true},OnPageVisible(){return true},HasJava(){return false},IsDownloadingUpdate(){return false},OnMenuButton(){return false},OnSearchButton(){return false},IsMetered(){return false},IsCharging(){return true},SupportsFullscreen(){return true}}}
-{const C3=self.C3;const ORIENTATIONS=["portrait","landscape","portrait-primary","portrait-secondary","landscape-primary","landscape-secondary"];C3.Plugins.Browser.Acts={Alert(message){this.PostToDOM("alert",{"message":message.toString()})},Close(){if(this._isConstructArcade)return;if(this._runtime.IsDebug())self.C3Debugger.CloseWindow();else this.PostToDOM("close")},Focus(){this.PostToDOM("set-focus",{"isFocus":true})},Blur(){this.PostToDOM("set-focus",{"isFocus":false})},GoBack(){if(this._isConstructArcade)return;
-this.PostToDOM("navigate",{"type":"back"})},GoForward(){if(this._isConstructArcade)return;this.PostToDOM("navigate",{"type":"forward"})},GoHome(){},Reload(){if(this._isConstructArcade)return;if(this._runtime.IsDebug())this._runtime.PostToDebugger({"type":"reload"});else this.PostToDOM("navigate",{"type":"reload"})},GoToURL(url,target){this._PostToDOMMaybeSync("navigate",{"type":"url","url":url,"target":target,"exportType":this._runtime.GetExportType()})},GoToURLWindow(url,tag){this._PostToDOMMaybeSync("navigate",
-{"type":"new-window","url":url,"tag":tag,"exportType":this._runtime.GetExportType()})},RequestFullScreen(mode,navUi){if(mode>=2)mode+=1;if(mode===6)mode=2;if(mode===1)mode=0;const modeStr=C3.CanvasManager._FullscreenModeNumberToString(mode);this._runtime.GetCanvasManager().SetDocumentFullscreenMode(modeStr);this._PostToDOMMaybeSync("request-fullscreen",{"navUI":navUi})},CancelFullScreen(){this._PostToDOMMaybeSync("exit-fullscreen")},Vibrate(pattern){const arr=pattern.split(",");for(let i=0,len=arr.length;i<
-len;++i)arr[i]=parseInt(arr[i],10);this._PostToDOMMaybeSync("vibrate",{"pattern":arr})},async InvokeDownload(url,filename){if(!url||!filename)return;const urlToDownload=await this._runtime.GetAssetManager().GetProjectFileUrl(url);this._runtime.InvokeDownload(urlToDownload,filename)},InvokeDownloadString(str,mimeType,filename){if(!filename)return;const dataUri=`data:${mimeType},${encodeURIComponent(str)}`;this._runtime.InvokeDownload(dataUri,filename)},ConsoleLog(type,msg){msg=msg.toString();if(type===
-0)console.log(msg);else if(type===1)console.warn(msg);else if(type===2)console.error(msg)},ConsoleGroup(name){console.group(name)},ConsoleGroupEnd(){console.groupEnd()},ExecJs(jsStr){try{eval(jsStr)}catch(err){console.error("Error executing JavaScript: ",err)}},LockOrientation(o){o=Math.floor(o);if(o<0||o>=ORIENTATIONS.length)return;const orientation=ORIENTATIONS[o];this._PostToDOMMaybeSync("lock-orientation",{"orientation":orientation})},UnlockOrientation(){this._PostToDOMMaybeSync("unlock-orientation")},
-LoadStyleSheet(url){this._runtime.GetAssetManager().LoadStyleSheet(url)},async SetDocumentCSSStyle(propName,value,selector,type){await this.PostToDOMAsync("set-document-css-style",{"prop":C3.CSSToCamelCase(propName),"value":value,"selector":selector,"is-all":type!==0})},async GetDocumentCSSStyle(propName,selector,tag){const ret=await this.PostToDOMAsync("get-document-css-style",{"prop":propName,"selector":selector});if(ret["isOk"])this._cssStyleMap.set(tag.toLowerCase(),ret["result"].trim())},SetHash(h){this.PostToDOM("set-hash",
-{"hash":h})}}}
-{const C3=self.C3;C3.Plugins.Browser.Exps={URL(){if(this._runtime.IsInWorker())return this._initLocationStr;else return location.toString()},Protocol(){if(this._runtime.IsInWorker())return(new URL(this._initLocationStr)).protocol;else return location.protocol},Domain(){if(this._runtime.IsInWorker())return(new URL(this._initLocationStr)).hostname;else return location.hostname},Port(){if(this._runtime.IsInWorker())return(new URL(this._initLocationStr)).port;else return location.port},PathName(){if(this._runtime.IsInWorker())return(new URL(this._initLocationStr)).pathname;
-else return location.pathname},Hash(){if(this._runtime.IsInWorker())return(new URL(this._initLocationStr)).hash;else return location.hash},QueryString(){if(this._runtime.IsInWorker())return(new URL(this._initLocationStr)).search;else return location.search},QueryParam(param){const search=this._runtime.IsInWorker()?(new URL(this._initLocationStr)).search:location.search;const match=RegExp("[?&]"+param+"=([^&]*)").exec(search);if(match)return decodeURIComponent(match[1].replace(/\+/g," "));else return""},
-Referrer(){return this._referrer},Title(){return this._docTitle},Language(){return navigator.language},Platform(){return navigator.platform},UserAgent(){return navigator.userAgent},ExecJS(jsStr){let result=0;try{result=eval(jsStr)}catch(err){console.error("Error executing JavaScript: ",err)}if(typeof result==="number"||typeof result==="string")return result;if(typeof result==="boolean")return result?1:0;else return 0},CSSStyleValue(tag){return this._cssStyleMap.get(tag)||""},Name(){return navigator.appName},
-Version(){return navigator.appVersion},Product(){return navigator.product},Vendor(){return navigator.vendor},BatteryLevel(){return 1},BatteryTimeLeft(){return Infinity},Bandwidth(){const connection=navigator["connection"];if(connection)return connection["downlink"]||connection["downlinkMax"]||connection["bandwidth"]||Infinity;else return Infinity},ConnectionType(){const connection=navigator["connection"];if(connection)return connection["type"]||"unknown";else return"unknown"},DevicePixelRatio(){return self.devicePixelRatio},
-ScreenWidth(){return this._screenWidth},ScreenHeight(){return this._screenHeight},WindowInnerWidth(){return this._runtime.GetCanvasManager().GetLastWidth()},WindowInnerHeight(){return this._runtime.GetCanvasManager().GetLastHeight()},WindowOuterWidth(){return this._windowOuterWidth},WindowOuterHeight(){return this._windowOuterWidth}}};
-
-}
-
-{
 'use strict';{const C3=self.C3;C3.Plugins.Keyboard=class KeyboardPlugin extends C3.SDKPluginBase{constructor(opts){super(opts)}Release(){super.Release()}}}
 {const C3=self.C3;const C3X=self.C3X;C3.Plugins.Keyboard.Type=class KeyboardType extends C3.SDKTypeBase{constructor(objectClass){super(objectClass)}Release(){super.Release()}OnCreate(){}GetScriptInterfaceClass(){return self.IKeyboardObjectType}};let keyboardObjectType=null;function GetKeyboardSdkInstance(){return keyboardObjectType.GetSingleGlobalInstance().GetSdkInstance()}self.IKeyboardObjectType=class IKeyboardObjectType extends self.IObjectClass{constructor(objectType){super(objectType);keyboardObjectType=
 objectType;objectType.GetRuntime()._GetCommonScriptInterfaces().keyboard=this}isKeyDown(keyOrCode){const keyboardInst=GetKeyboardSdkInstance();if(typeof keyOrCode==="string")return keyboardInst.IsKeyDown(keyOrCode);else if(typeof keyOrCode==="number")return keyboardInst.IsKeyCodeDown(keyOrCode);else throw new TypeError("expected string or number");}}}
@@ -4074,20 +4049,6 @@ value:new ArrayBuffer(0);await this.ScheduleTriggers(async()=>{this._lastValue="
 await this.ScheduleTriggers(async()=>{this._currentKey=key;if(typeof value==="undefined"||value===null){this._lastValue="";await this.TriggerAsync(C3.Plugins.LocalStorage.Cnds.OnItemMissing)}else{this._lastValue=IsExpressionType(value)?value:"";await this.TriggerAsync(C3.Plugins.LocalStorage.Cnds.OnItemExists)}})}catch(err){await this._TriggerStorageError(err)}},async RemoveItem(key){try{await this._storage.removeItem(key);await this.ScheduleTriggers(async()=>{this._currentKey=key;this._lastValue=
 "";await this.TriggerAsync(C3.Plugins.LocalStorage.Cnds.OnAnyItemRemoved);await this.TriggerAsync(C3.Plugins.LocalStorage.Cnds.OnItemRemoved)})}catch(err){await this._TriggerStorageError(err)}},async ClearStorage(){try{await this._storage.clear();await this.ScheduleTriggers(async()=>{this._currentKey="";this._lastValue="";C3.clearArray(this._keyNamesList);await this.TriggerAsync(C3.Plugins.LocalStorage.Cnds.OnCleared)})}catch(err){await this._TriggerStorageError(err)}},async GetAllKeyNames(){try{const keyList=
 await this._storage.keys();await this.ScheduleTriggers(async()=>{this._keyNamesList=keyList;await this.TriggerAsync(C3.Plugins.LocalStorage.Cnds.OnAllKeyNamesLoaded)})}catch(err){await this._TriggerStorageError(err)}}}}{const C3=self.C3;C3.Plugins.LocalStorage.Exps={ItemValue(){return this._lastValue},Key(){return this._currentKey},KeyCount(){return this._keyNamesList.length},KeyAt(i){i=Math.floor(i);if(i<0||i>=this._keyNamesList.length)return"";return this._keyNamesList[i]},ErrorMessage(){return this._errorMessage}}};
-
-}
-
-{
-'use strict';{const C3=self.C3;C3.Plugins.Function=class FunctionPlugin extends C3.SDKPluginBase{constructor(opts){super(opts)}Release(){super.Release()}}}{const C3=self.C3;C3.Plugins.Function.Type=class FunctionType extends C3.SDKTypeBase{constructor(objectClass){super(objectClass)}Release(){super.Release()}OnCreate(){}}}
-{const C3=self.C3;class FuncStackEntry{constructor(){this.name="";this.retVal=0;this.params=[]}}C3.Plugins.Function.Instance=class FunctionInstance extends C3.SDKInstanceBase{constructor(inst,properties){super(inst);this._isPreview=this._runtime.IsPreview();this._funcStackPtr=-1;this._funcStack=[];const invokeFromJs=(name,params)=>this._InvokeFromJS(name,params);self["c2_callFunction"]=invokeFromJs;self["c3_callFunction"]=invokeFromJs}Release(){super.Release()}Push(){const funcStack=this._funcStack;
-const i=++this._funcStackPtr;if(i===funcStack.length)funcStack.push(new FuncStackEntry);return funcStack[i]}Pop(){--this._funcStackPtr}GetCurrent(){const i=this._funcStackPtr;if(i<0)return null;return this._funcStack[i]}GetOneAbove(){const funcStack=this._funcStack;if(!funcStack.length)return null;const i=Math.min(this._funcStackPtr+1,funcStack.length-1);return funcStack[i]}_CallFunction(name,params){const fs=this.Push();fs.name=name.toLowerCase();fs.retVal=0;C3.shallowAssignArray(fs.params,params);
-const ran=this.FastTrigger(C3.Plugins.Function.Cnds.OnFunction,fs.name);if(this._isPreview&&!ran)console.warn(`[Construct] Function object: called function '${name}' but no event was triggered. Is the function call spelt incorrectly or no longer used?`);this.Pop()}*_DebugCallFunction(name,params){const fs=this.Push();fs.name=name.toLowerCase();fs.retVal=0;C3.shallowAssignArray(fs.params,params);const ran=yield*this.DebugFastTrigger(C3.Plugins.Function.Cnds.OnFunction,fs.name);if(this._isPreview&&
-!ran)console.warn(`[Construct] Function object: called function '${name}' but no event was triggered. Is the function call spelt incorrectly or no longer used?`);this.Pop()}_InvokeFromJS(name,params){const fs=this.Push();fs.name=name.toLowerCase();fs.retVal=0;fs.params=(params||[]).map(v=>{if(typeof v==="number"||typeof v==="string")return v;else if(typeof v==="boolean")return v?1:0;else return 0});this.FastTrigger(C3.Plugins.Function.Cnds.OnFunction,fs.name);this.Pop();return fs.retVal}}}
-{const C3=self.C3;C3.Plugins.Function.Cnds={OnFunction(name){return true},CompareParam(index,cmp,value){const fs=this.GetCurrent();if(!fs){if(this._isPreview)console.warn(`[Construct] Function object: used 'Compare parameter' condition when not in a function call`);return false}const params=fs.params;index=Math.floor(index);let paramValue=0;if(index<0||index>=params.length){if(this._isPreview)console.warn(`[Construct] Function object: in function '${fs.name}', compared parameter out of bounds (accessed index ${index} of ${params.length})`)}else paramValue=
-params[index];return C3.compare(paramValue,cmp,value)}}}{const C3=self.C3;C3.Plugins.Function.Acts={CallFunction(name,params){if(this._runtime.IsDebugging())return this._DebugCallFunction(name,params);else this._CallFunction(name,params)},SetReturnValue(value){const fs=this.GetCurrent();if(fs)fs.retVal=value;else if(this._isPreview)console.warn(`[Construct] Function object: used 'Set return value' when not in a function call`)},CallExpression(unused){}}}
-{const C3=self.C3;C3.Plugins.Function.Exps={ReturnValue(){const fs=this.GetOneAbove();return fs?fs.retVal:0},ParamCount(){const fs=this.GetCurrent();if(fs)return fs.params.length;else{if(this._isPreview)console.warn(`[Construct] Function object: used 'ParamCount' expression when not in a function call`);return 0}},Param(index){index=Math.floor(index);const fs=this.GetCurrent();if(fs){const params=fs.params;if(index>=0&&index<params.length)return params[index];else{if(this._isPreview)console.warn(`[Construct] Function object: in function '${fs.name}', accessed parameter out of bounds (accessed index ${index} of ${params.length})`);
-return 0}}else{if(this._isPreview)console.warn(`[Construct] Function object: used 'Param' expression when not in a function call`);return 0}},Call(name,...args){const fs=this.Push();fs.name=name.toLowerCase();fs.retVal=0;fs.params=args;const ran=this.FastTrigger(C3.Plugins.Function.Cnds.OnFunction,fs.name);if(this._isPreview&&!ran)console.warn(`[Construct] Function object: expression Function.Call("${name}" ...) was used, but no event was triggered. Is the function call spelt incorrectly or no longer used?`);
-this.Pop();return fs.retVal}}};
 
 }
 
@@ -6808,13 +6769,11 @@ self.C3_GetObjectRefTable = function () {
 		C3.Plugins.Sprite,
 		C3.Behaviors.Rotate,
 		C3.Plugins.Audio,
-		C3.Plugins.Browser,
 		C3.Plugins.Keyboard,
 		C3.Plugins.Mouse,
 		C3.Plugins.Touch,
 		C3.Plugins.Arr,
 		C3.Plugins.LocalStorage,
-		C3.Plugins.Function,
 		C3.Plugins.Eponesh_GameScore,
 		C3.Plugins.Spritefont2,
 		C3.Behaviors.Sin,
@@ -6911,19 +6870,16 @@ self.C3_GetObjectRefTable = function () {
 		C3.Plugins.Touch.Cnds.OnTouchObject,
 		C3.Plugins.Eponesh_GameScore.Acts.AdsShowRewarded,
 		C3.Plugins.Eponesh_GameScore.Cnds.OnAdsClose,
-		C3.Plugins.Function.Cnds.OnFunction,
 		C3.Plugins.Audio.Acts.Preload,
 		C3.Plugins.System.Cnds.Compare,
 		C3.Plugins.System.Exps.loadingprogress,
 		C3.Plugins.Spritefont2.Cnds.IsBoolInstanceVarSet,
 		C3.Plugins.System.Cnds.OnLoadFinished,
 		C3.Plugins.Spritefont2.Acts.SetBoolInstanceVar,
-		C3.Plugins.Browser.Acts.ExecJs,
 		C3.Plugins.Button.Acts.SetCSSStyle,
 		C3.Plugins.Button.Cnds.OnClicked,
 		C3.Plugins.Sprite.Cnds.CompareFrame,
 		C3.Plugins.Sprite.Acts.StartAnim,
-		C3.Plugins.Browser.Acts.RequestFullScreen,
 		C3.Plugins.Eponesh_GameScore.Acts.SocialsShare,
 		C3.Plugins.Eponesh_GameScore.Acts.LeaderboardOpen,
 		C3.Plugins.LocalStorage.Acts.CheckItemExists,
@@ -6944,7 +6900,6 @@ self.C3_GetObjectRefTable = function () {
 		C3.Plugins.System.Cnds.Else,
 		C3.Plugins.Mouse.Cnds.IsButtonDown,
 		C3.Plugins.Mouse.Acts.SetCursorSprite,
-		C3.Plugins.Browser.Acts.CancelFullScreen,
 		C3.Plugins.System.Exps.windowwidth,
 		C3.Plugins.System.Exps.windowheight,
 		C3.Plugins.System.Acts.SetLayerVisible,
@@ -6952,8 +6907,6 @@ self.C3_GetObjectRefTable = function () {
 		C3.Plugins.Sprite.Acts.SetScale,
 		C3.Plugins.System.Cnds.LayerCmpOpacity,
 		C3.Plugins.System.Acts.Signal,
-		C3.Plugins.Browser.Acts.GoToURLWindow,
-		C3.Plugins.Browser.Acts.Close,
 		C3.Plugins.Spritefont2.Acts.SetInstanceVar,
 		C3.Plugins.Arr.Acts.SetSize,
 		C3.Plugins.Eponesh_GameScore.Acts.PlayerSet,
@@ -6982,13 +6935,11 @@ self.C3_JsPropNameTable = [
 	{Background: 0},
 	{Background_Sky: 0},
 	{Audio: 0},
-	{Browser: 0},
 	{Keyboard: 0},
 	{Mouse: 0},
 	{Touch: 0},
 	{Level_Stars: 0},
 	{ЛокальноеХранилище: 0},
-	{Function: 0},
 	{GamePush: 0},
 	{Dust: 0},
 	{Name: 0},
@@ -7486,8 +7437,6 @@ self.C3_ExpressionFuncs = [
 		() => "Angry Cat ShotTop_Score",
 		() => 100,
 		() => "score",
-		() => "onYandexRewarded",
-		() => "onYandexRewardDismissed",
 		() => "Loading_Settings",
 		p => {
 			const f0 = p._GetNode(0).GetBoundMethod();
@@ -7521,16 +7470,10 @@ self.C3_ExpressionFuncs = [
 			return () => (and("Loading-", Math.round((f0() * 100))) + "%");
 		},
 		() => "Loading-100%",
-		() => "ADAPTER.yandexInterestialLoad('R-M-2393905-1')",
-		() => "ADAPTER.yandexRewardedLoad('R-M-2393905-2')",
 		() => "color",
 		() => "none",
 		() => "background",
 		() => "border",
-		() => "onYandexInterestialLoaded",
-		() => "ADAPTER.yandexInterestialShow()",
-		() => "onYandexRewardedLoaded",
-		() => "ADAPTER.yandexRewardedShow()",
 		p => {
 			const f0 = p._GetNode(0).GetBoundMethod();
 			const n1 = p._GetNode(1);
@@ -7725,8 +7668,6 @@ self.C3_ExpressionFuncs = [
 		},
 		() => "Button_Play",
 		() => "Button_More_Games",
-		() => "https://codecanyon.net/user/muscle-ss/portfolio?ref=Muscle-SS",
-		() => "More_Games",
 		() => "Button_Exit",
 		() => "Levels_Settings",
 		() => "Gui",
@@ -7799,8 +7740,6 @@ self.C3_ExpressionFuncs = [
 		() => "Button_Facebook",
 		() => "Button_Twitter",
 		() => "Button_Google_Plus",
-		() => "https://plus.google.com/share?url=https://codecanyon.net/user/muscle-ss/portfolio?ref=Muscle-SS",
-		() => "Google_Plus",
 		() => "Game_Over_Settings",
 		() => "Restart game and subtract 100 score!",
 		p => {
